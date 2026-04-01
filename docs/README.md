@@ -6,7 +6,7 @@
 
 ## 🎯 FICHIER PRINCIPAL
 
-### ⭐ **`METHODOLOGIE.md`** - **COMMENCE PAR ICI !**
+### ⭐ **`00-START-HERE.md`** - **COMMENCE PAR ICI !**
 
 C'est **LE** fichier de référence. Il contient :
 - ✅ La méthodologie complète (7 étapes)
@@ -95,7 +95,7 @@ C'est **LE** fichier de référence. Il contient :
 ```
 docs/
 ├── README.md                      ← Ce fichier (START HERE)
-├── METHODOLOGIE.md                ← PRINCIPAL - À lire en premier
+├── 00-START-HERE.md               ← PRINCIPAL - À lire en premier
 ├── PROJECT_TRACKER.md             ← Suivi des écrans
 ├── PROJECT_ROADMAP.md             ← Roadmap détaillée
 ├── API_CONTRACTS.md               ← Contrats Server Actions
@@ -112,7 +112,7 @@ docs/
 
 ```bash
 # 1. Ouvre le fichier principal
-code docs/METHODOLOGIE.md
+code docs/00-START-HERE.md
 
 # 2. Lis la section "État Actuel du Projet"
 
@@ -130,7 +130,7 @@ code docs/PROJECT_TRACKER.md
 
 ```bash
 # 1. Lis la méthodologie (7 étapes)
-code docs/METHODOLOGIE.md
+code docs/00-START-HERE.md
 
 # 2. Vérifie les permissions
 code docs/FLUX_PAR_ROLE.md
