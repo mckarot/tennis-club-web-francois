@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Eco-Luxe Tennis Collective - Dashboard Admin Simplifié</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-container": "#75280b",
+              "tertiary": "#14232a",
+              "secondary-fixed": "#ffdbd0",
+              "primary-container": "#1a3c34",
+              "surface-variant": "#e1e3e1",
+              "surface-container-high": "#e7e8e6",
+              "on-primary-fixed": "#00201a",
+              "inverse-surface": "#2e3130",
+              "on-tertiary-fixed": "#0e1d25",
+              "on-primary-fixed-variant": "#2b4d44",
+              "surface-container-highest": "#e1e3e1",
+              "secondary": "#9b4426",
+              "on-tertiary": "#ffffff",
+              "surface-tint": "#43655c",
+              "secondary-container": "#fe906c",
+              "outline-variant": "#c1c8c4",
+              "on-secondary": "#ffffff",
+              "on-surface": "#191c1b",
+              "tertiary-fixed-dim": "#b9c9d3",
+              "primary": "#01261f",
+              "on-error": "#ffffff",
+              "surface-container": "#edeeec",
+              "error-container": "#ffdad6",
+              "surface-bright": "#f9faf8",
+              "primary-fixed": "#c5eadf",
+              "surface-container-low": "#f3f4f2",
+              "tertiary-container": "#293840",
+              "on-background": "#191c1b",
+              "error": "#ba1a1a",
+              "surface-dim": "#d9dad8",
+              "on-tertiary-fixed-variant": "#3a4951",
+              "surface": "#f9faf8",
+              "primary-fixed-dim": "#aacec3",
+              "background": "#f9faf8",
+              "on-primary": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#717976",
+              "inverse-on-surface": "#f0f1ef",
+              "on-secondary-fixed": "#390b00",
+              "secondary-fixed-dim": "#ffb59d",
+              "on-surface-variant": "#414846",
+              "on-tertiary-container": "#91a1ab",
+              "on-primary-container": "#83a69c",
+              "on-secondary-fixed-variant": "#7c2d10",
+              "on-error-container": "#93000a",
+              "inverse-primary": "#aacec3",
+              "tertiary-fixed": "#d5e5ef"
+            },
+            fontFamily: {
+              "headline": ["Lexend"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-secondary-container/30">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-full z-40 flex flex-col py-8 bg-emerald-950 dark:bg-emerald-950 h-screen w-72 rounded-r-[3rem] overflow-hidden font-['Lexend'] tracking-tight shadow-[0_20px_50px_rgba(25,28,27,0.06)]">
+<div class="px-8 mb-12">
+<h1 class="text-2xl font-bold text-white mb-1">Eco-Luxe Tennis</h1>
+<p class="text-white/50 text-xs uppercase tracking-widest">Administration Club</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-4 px-6 py-4 bg-emerald-900/50 text-orange-400 font-semibold rounded-full mx-4 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Tableau de bord</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-white/70 hover:text-white mx-4 hover:bg-white/5 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Membres</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-white/70 hover:text-white mx-4 hover:bg-white/5 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span>Planning</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-white/70 hover:text-white mx-4 hover:bg-white/5 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Paramètres</span>
+</a>
+</nav>
+<div class="px-8 mt-auto">
+<div class="p-4 bg-white/5 rounded-2xl flex items-center gap-3 mb-6">
+<img alt="Admin" class="w-10 h-10 rounded-full object-cover" data-alt="Professional headshot of a middle-aged male club manager with a friendly and authoritative expression in a sunlit office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApWH22ERtMadLxhRt6hBOEA9xD241685AzN6af0XhPzQ2Yih0oCkt__slLAn_-UamnhzGF6PE2qennsM9SwG3CscKpvGrXK2opTo1PqKQ58GIfW4I_0A7ofoab7IVpTPW3nI_T4_xuZ_Ue33Ev8bl__7FYPA6j7m71IgV-ab6hZcw3Qw8466NG0ZvCzum1G3BFosqW1iNEJschCMhLhg_VF5Ry4IokIfJhTMn2fLtzyYI-HvspCuu-BCjGTdslC2wU3nZkG-H5Vdw"/>
+<div>
+<p class="text-sm font-semibold text-white">Jean-Marc L.</p>
+<p class="text-xs text-white/40">Super Admin</p>
+</div>
+</div>
+<button class="w-full py-4 bg-secondary text-white rounded-full font-bold hover:scale-95 duration-200 transition-transform">
+                Réserver un Court
+            </button>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="pl-80 pr-12 pt-8 pb-20 min-h-screen">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full mb-12 font-['Lexend'] font-medium">
+<div class="flex flex-col">
+<h2 class="text-3xl font-extrabold text-primary tracking-tight">Bonjour, Administrateur</h2>
+<p class="text-on-surface-variant font-body">Club du François, Martinique • 24 Octobre 2023</p>
+</div>
+<div class="flex items-center gap-4 bg-surface-container-low p-2 rounded-full shadow-sm">
+<!-- Role Toggle (Indication only) -->
+<button class="bg-surface-container-lowest text-primary px-6 py-2 rounded-full text-xs font-bold shadow-sm border border-outline-variant/10">Membre</button>
+<button class="text-on-surface-variant px-6 py-2 rounded-full text-xs font-semibold hover:bg-surface-container-high transition-colors">Admin View</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-primary-fixed shadow-md">
+<img class="w-full h-full object-cover" data-alt="portrait of a confident man in tennis attire smiling at the club" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFGCvzom7rzEu-5FRVYU-mgSB30mbDOqJ1SAN1k97Z5zzKoy77D4L7htm8KWwGDK5HhmAUOvOlYSoplBQnaxJI4hgHLiHdH68L7aa9luZBDfyTdcp2LlgoN-_u9od4PfJyQjnVx1LXvDaEf0m5HRCwCPZvrBcHPSxf8yaFqXGxNIBNjQT1dwHwvUCFvUDa9fSnZaBffF6GkfFiL9hAXE0IcLDsB-09eLOrmyEBaqWtqeGs4sSRqHeYkkgnfglLtYTG8v9paV-zLsE"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Content: Simple List-Based Bento Grid -->
+<div class="bento-grid">
+<!-- 1. Actions Rapides (Simplified) -->
+<section class="col-span-12 lg:col-span-4 p-6 rounded-2xl bg-surface-container-low border border-outline-variant/30">
+<h3 class="text-lg font-bold text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span> Actions Rapides
+                </h3>
+<div class="grid grid-cols-1 gap-3">
+<button class="flex items-center gap-3 p-4 bg-surface-container-lowest rounded-xl hover:bg-secondary/5 border border-outline-variant/20 transition-colors text-left">
+<span class="material-symbols-outlined text-secondary" data-icon="person_add">person_add</span>
+<span class="font-semibold text-sm">Ajouter un Membre</span>
+</button>
+<button class="flex items-center gap-3 p-4 bg-surface-container-lowest rounded-xl hover:bg-secondary/5 border border-outline-variant/20 transition-colors text-left">
+<span class="material-symbols-outlined text-secondary" data-icon="event_available">event_available</span>
+<span class="font-semibold text-sm">Nouvelle Réservation</span>
+</button>
+<button class="flex items-center gap-3 p-4 bg-surface-container-lowest rounded-xl hover:bg-secondary/5 border border-outline-variant/20 transition-colors text-left">
+<span class="material-symbols-outlined text-secondary" data-icon="block">block</span>
+<span class="font-semibold text-sm">Bloquer un Court</span>
+</button>
+</div>
+</section>
+<!-- 2. État des Courts (Grid of status indicators) -->
+<section class="col-span-12 lg:col-span-8 p-6 rounded-2xl bg-primary text-white">
+<h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="sports_tennis">sports_tennis</span> État des Courts
+                </h3>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+<div class="bg-white/10 rounded-xl p-3 flex items-center justify-between border border-white/10">
+<div>
+<p class="text-[10px] uppercase opacity-60 font-bold">Court 01</p>
+<p class="text-xs font-medium">Quick</p>
+</div>
+<span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+</div>
+<div class="bg-white/10 rounded-xl p-3 flex items-center justify-between border border-white/10">
+<div>
+<p class="text-[10px] uppercase opacity-60 font-bold">Court 02</p>
+<p class="text-xs font-medium">Quick</p>
+</div>
+<span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+</div>
+<div class="bg-white/10 rounded-xl p-3 flex items-center justify-between border border-secondary/40 ring-1 ring-secondary/40">
+<div>
+<p class="text-[10px] uppercase opacity-60 font-bold">Court 03</p>
+<p class="text-xs font-medium">Quick</p>
+</div>
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+</div>
+<div class="bg-white/10 rounded-xl p-3 flex items-center justify-between border border-white/10">
+<div>
+<p class="text-[10px] uppercase opacity-60 font-bold">Court 04</p>
+<p class="text-xs font-medium">Quick</p>
+</div>
+<span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+</div>
+<div class="bg-white/10 rounded-xl p-3 flex items-center justify-between border border-white/10">
+<div>
+<p class="text-[10px] uppercase opacity-60 font-bold">Court 05</p>
+<p class="text-xs font-medium">Quick</p>
+</div>
+<span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+</div>
+<div class="bg-white/10 rounded-xl p-3 flex items-center justify-between border border-white/10">
+<div>
+<p class="text-[10px] uppercase opacity-60 font-bold">Court 06</p>
+<p class="text-xs font-medium">Quick</p>
+</div>
+<span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+</div>
+</div>
+</section>
+<!-- 3. Dernières Réservations (Standard Table) -->
+<section class="col-span-12 lg:col-span-7 p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold text-primary">Dernières Réservations</h3>
+<button class="text-secondary text-xs font-bold hover:underline">Voir tout</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant/30 text-outline text-[11px] uppercase tracking-wider font-bold">
+<th class="pb-3 px-2">Membre</th>
+<th class="pb-3 px-2">Court</th>
+<th class="pb-3 px-2">Horaire</th>
+<th class="pb-3 px-2 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-4 px-2">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">TB</div>
+<span class="text-sm font-semibold">Thomas Bertrand</span>
+</div>
+</td>
+<td class="py-4 px-2 text-sm">Court 2</td>
+<td class="py-4 px-2 text-sm text-on-surface-variant">14:00 - 15:30</td>
+<td class="py-4 px-2 text-right">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-4 px-2">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">SM</div>
+<span class="text-sm font-semibold">Sophie Maréchal</span>
+</div>
+</td>
+<td class="py-4 px-2 text-sm">Court 1</td>
+<td class="py-4 px-2 text-sm text-on-surface-variant">15:30 - 17:00</td>
+<td class="py-4 px-2 text-right">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-4 px-2">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">JD</div>
+<span class="text-sm font-semibold">Julien Dupont</span>
+</div>
+</td>
+<td class="py-4 px-2 text-sm">Court 5</td>
+<td class="py-4 px-2 text-sm text-on-surface-variant">16:00 - 17:30</td>
+<td class="py-4 px-2 text-right">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- 4. Membres Récents (List-based Display) -->
+<section class="col-span-12 lg:col-span-5 p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold text-primary">Membres Récents</h3>
+<button class="text-secondary text-xs font-bold hover:underline">Gérer</button>
+</div>
+<div class="space-y-1">
+<div class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-lg">person</span>
+</div>
+<div>
+<p class="text-sm font-bold">Marie Laurent</p>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter">Inscrit le 23/10</p>
+</div>
+</div>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold uppercase">Actif</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-lg">person</span>
+</div>
+<div>
+<p class="text-sm font-bold">Marc Petit</p>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter">Inscrit le 22/10</p>
+</div>
+</div>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold uppercase">Actif</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-lg">person</span>
+</div>
+<div>
+<p class="text-sm font-bold">Léa Rousseau</p>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter">Inscrit le 20/10</p>
+</div>
+</div>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-surface-container-highest text-outline font-bold uppercase">En attente</span>
+</div>
+</div>
+<button class="w-full mt-4 py-3 border border-dashed border-outline-variant rounded-xl text-xs font-bold text-outline hover:bg-surface-container-low transition-colors">
+                    + Ajouter un nouveau membre
+                </button>
+</section>
+</div>
+</main>
+</body></html>

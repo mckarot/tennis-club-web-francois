@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Réservations | Tennis Club du François</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed": "#c5eadf",
+                        "tertiary-container": "#293840",
+                        "outline": "#717976",
+                        "inverse-primary": "#aacec3",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary": "#14232a",
+                        "surface-container-high": "#e7e8e6",
+                        "secondary-fixed": "#ffdbd0",
+                        "outline-variant": "#c1c8c4",
+                        "surface-container": "#edeeec",
+                        "on-secondary-fixed-variant": "#7c2d10",
+                        "surface-bright": "#f9faf8",
+                        "primary-container": "#1a3c34",
+                        "on-tertiary-fixed": "#0e1d25",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#ffb59d",
+                        "surface-variant": "#e1e3e1",
+                        "inverse-surface": "#2e3130",
+                        "on-tertiary-fixed-variant": "#3a4951",
+                        "on-secondary-fixed": "#390b00",
+                        "on-primary-fixed": "#00201a",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#b9c9d3",
+                        "on-background": "#191c1b",
+                        "inverse-on-surface": "#f0f1ef",
+                        "surface-tint": "#43655c",
+                        "surface": "#f9faf8",
+                        "on-primary-container": "#83a69c",
+                        "secondary-container": "#fe906c",
+                        "surface-container-low": "#f3f4f2",
+                        "on-surface-variant": "#414846",
+                        "secondary": "#9b4426",
+                        "surface-dim": "#d9dad8",
+                        "on-tertiary-container": "#91a1ab",
+                        "surface-container-highest": "#e1e3e1",
+                        "background": "#f9faf8",
+                        "primary": "#01261f",
+                        "on-primary-fixed-variant": "#2b4d44",
+                        "on-surface": "#191c1b",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#d5e5ef",
+                        "on-secondary-container": "#75280b",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#aacec3"
+                    },
+                    fontFamily: {
+                        "headline": ["Lexend"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- SideNavBar (Context: Dashboard) -->
+<nav class="hidden md:flex h-screen w-64 fixed left-0 top-0 rounded-r-[3rem] bg-emerald-900 dark:bg-emerald-950 flex-col py-8 px-4 shadow-[20px_0_50px_rgba(25,28,27,0.1)] z-50">
+<div class="mb-10 px-4">
+<h1 class="text-lg font-bold text-white font-headline">Club François</h1>
+<p class="text-xs text-emerald-100/60 font-medium">Espace Membre</p>
+</div>
+<div class="flex-grow space-y-2">
+<!-- Dashboard Tab -->
+<a class="flex items-center text-emerald-100/60 hover:text-white px-4 py-3 mx-2 mb-2 transition-colors hover:bg-emerald-800/50 rounded-full group" href="#">
+<span class="material-symbols-outlined mr-3 transition-transform group-hover:translate-x-1" data-icon="dashboard">dashboard</span>
+<span class="font-lexend text-sm font-medium">Dashboard</span>
+</a>
+<!-- Planning Tab (Active Logic: Booking System maps to Planning/Reservations) -->
+<a class="flex items-center bg-orange-500 text-white rounded-full mx-2 px-4 py-3 mb-2 shadow-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="calendar_month">calendar_month</span>
+<span class="font-lexend text-sm font-medium">Planning</span>
+</a>
+<!-- Mes Réservations Tab -->
+<a class="flex items-center text-emerald-100/60 hover:text-white px-4 py-3 mx-2 mb-2 transition-colors hover:bg-emerald-800/50 rounded-full group" href="#">
+<span class="material-symbols-outlined mr-3 transition-transform group-hover:translate-x-1" data-icon="sports_tennis">sports_tennis</span>
+<span class="font-lexend text-sm font-medium">Mes Réservations</span>
+</a>
+<!-- Paramètres Tab -->
+<a class="flex items-center text-emerald-100/60 hover:text-white px-4 py-3 mx-2 mb-2 transition-colors hover:bg-emerald-800/50 rounded-full group" href="#">
+<span class="material-symbols-outlined mr-3 transition-transform group-hover:translate-x-1" data-icon="settings">settings</span>
+<span class="font-lexend text-sm font-medium">Paramètres</span>
+</a>
+</div>
+<div class="mt-auto border-t border-emerald-800/30 pt-6 px-2 space-y-2">
+<button class="w-full bg-secondary text-white rounded-full py-3 px-4 font-headline text-sm font-bold shadow-lg hover:scale-105 transition-transform active:scale-95 mb-4">
+                Réserver un court
+            </button>
+<a class="flex items-center text-emerald-100/60 hover:text-white px-4 py-2 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="help">help</span>
+<span class="font-lexend text-sm font-medium">Aide</span>
+</a>
+<a class="flex items-center text-emerald-100/60 hover:text-white px-4 py-2 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="logout">logout</span>
+<span class="font-lexend text-sm font-medium">Déconnexion</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 min-h-screen p-6 md:p-12">
+<!-- Header Section (Asymmetric Bento Header) -->
+<header class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12 items-end">
+<div class="lg:col-span-2">
+<h2 class="text-secondary font-headline text-sm font-bold tracking-widest uppercase mb-2">Planning des Courts</h2>
+<h1 class="text-4xl md:text-5xl font-headline font-black text-primary tracking-tighter leading-none">Réservez votre moment.</h1>
+<p class="mt-4 text-on-surface-variant max-w-xl text-lg leading-relaxed">
+                    Sélectionnez votre terrain préféré parmi nos 6 surfaces de prestige. Le climat est idéal aujourd'hui à Martinique pour un match intense.
+                </p>
+</div>
+<div class="bg-surface-container-high rounded-xl p-6 flex flex-col justify-between h-full min-h-[160px] shadow-sm">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="wb_sunny">wb_sunny</span>
+<span class="text-2xl font-headline font-bold text-primary">28°C</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface-variant">Météo Le François</p>
+<p class="text-xs text-on-surface-variant/70">Conditions parfaites pour la terre battue</p>
+</div>
+</div>
+</header>
+<!-- Interactive Booking Bento Grid -->
+<section class="grid grid-cols-1 gap-8">
+<!-- Calendar Navigation & Controls -->
+<div class="flex flex-col md:flex-row justify-between items-center bg-surface-container-low p-4 rounded-full px-8 gap-4">
+<div class="flex items-center gap-6">
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-lowest text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<div class="text-center">
+<span class="block text-xs font-bold text-on-surface-variant/60 uppercase tracking-widest">Semaine du</span>
+<span class="block text-lg font-headline font-bold text-primary">12 - 18 Août 2024</span>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-lowest text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-white/80 border border-outline-variant/30 backdrop-blur-sm"></div>
+<span class="text-xs font-medium text-on-surface-variant">Libre</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary-container/40"></div>
+<span class="text-xs font-medium text-on-surface-variant">Occupé</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="text-xs font-medium text-on-surface-variant">Sélection</span>
+</div>
+</div>
+</div>
+<!-- Booking Matrix -->
+<div class="bg-surface-container-lowest rounded-xl shadow-Ambient overflow-hidden">
+<div class="overflow-x-auto hide-scrollbar">
+<div class="min-w-[1000px]">
+<!-- Court Labels Row -->
+<div class="grid grid-cols-7 border-b border-outline-variant/10">
+<div class="p-6 bg-surface-container-high/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary/40" data-icon="schedule">schedule</span>
+</div>
+<div class="p-6 text-center border-l border-outline-variant/10">
+<p class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant/50 mb-1">Court 1</p>
+<p class="font-headline font-bold text-primary text-sm">Gazon Synthétique</p>
+</div>
+<div class="p-6 text-center border-l border-outline-variant/10">
+<p class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant/50 mb-1">Court 2</p>
+<p class="font-headline font-bold text-primary text-sm">Terre Battue</p>
+</div>
+<div class="p-6 text-center border-l border-outline-variant/10">
+<p class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant/50 mb-1">Court 3</p>
+<p class="font-headline font-bold text-primary text-sm">Résine Hard</p>
+</div>
+<div class="p-6 text-center border-l border-outline-variant/10">
+<p class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant/50 mb-1">Court 4</p>
+<p class="font-headline font-bold text-primary text-sm">Terre Battue</p>
+</div>
+<div class="p-6 text-center border-l border-outline-variant/10">
+<p class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant/50 mb-1">Court 5</p>
+<p class="font-headline font-bold text-primary text-sm">Gazon Synthétique</p>
+</div>
+<div class="p-6 text-center border-l border-outline-variant/10">
+<p class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant/50 mb-1">Court 6</p>
+<p class="font-headline font-bold text-primary text-sm">Padel Panoramique</p>
+</div>
+</div>
+<!-- Time Slots Grid -->
+<div class="divide-y divide-outline-variant/10">
+<!-- Rows from 07:00 to 21:00 -->
+<!-- 07:00 Row -->
+<div class="grid grid-cols-7 group/row">
+<div class="p-4 flex items-center justify-center bg-surface-container-low/30">
+<span class="font-headline font-bold text-primary/60 text-sm">07:00</span>
+</div>
+<!-- Slot Available -->
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all group/slot relative overflow-hidden">
+<div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] opacity-0 group-hover/slot:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-primary scale-0 group-hover/slot:scale-100 transition-transform duration-300" data-icon="add">add</span>
+</div>
+</button>
+<!-- Slot Booked -->
+<div class="h-20 border-l border-outline-variant/10 bg-primary-container/10 flex items-center justify-center px-4">
+<div class="w-full h-12 bg-primary-container/20 rounded-lg flex items-center justify-center text-[10px] font-bold text-on-primary-container/70 uppercase tracking-tighter text-center">
+                                        Occupé
+                                    </div>
+</div>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+</div>
+<!-- 08:00 Row -->
+<div class="grid grid-cols-7 group/row">
+<div class="p-4 flex items-center justify-center bg-surface-container-low/30">
+<span class="font-headline font-bold text-primary/60 text-sm">08:00</span>
+</div>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<!-- Selected Slot -->
+<button class="h-20 border-l border-outline-variant/10 bg-secondary flex flex-col items-center justify-center text-white p-2">
+<span class="text-[10px] font-bold uppercase tracking-widest opacity-80">Votre choix</span>
+<span class="font-headline font-bold text-sm">Réserver</span>
+</button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+</div>
+<!-- 09:00 Row -->
+<div class="grid grid-cols-7 group/row">
+<div class="p-4 flex items-center justify-center bg-surface-container-low/30">
+<span class="font-headline font-bold text-primary/60 text-sm">09:00</span>
+</div>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<div class="h-20 border-l border-outline-variant/10 bg-primary-container/10 flex items-center justify-center px-4">
+<div class="w-full h-12 bg-primary-container/20 rounded-lg flex items-center justify-center text-[10px] font-bold text-on-primary-container/70 uppercase tracking-tighter text-center">Cours Collectif</div>
+</div>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+</div>
+<!-- 10:00 Row (Collapsed/Truncated logic for visual demo) -->
+<div class="grid grid-cols-7 group/row">
+<div class="p-4 flex items-center justify-center bg-surface-container-low/30">
+<span class="font-headline font-bold text-primary/60 text-sm">10:00</span>
+</div>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+</div>
+<!-- 11:00 Row -->
+<div class="grid grid-cols-7 group/row">
+<div class="p-4 flex items-center justify-center bg-surface-container-low/30">
+<span class="font-headline font-bold text-primary/60 text-sm">11:00</span>
+</div>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+<div class="h-20 border-l border-outline-variant/10 bg-primary-container/10 flex items-center justify-center px-4">
+<div class="w-full h-12 bg-primary-container/20 rounded-lg flex items-center justify-center text-[10px] font-bold text-on-primary-container/70 uppercase tracking-tighter text-center">Maintenance</div>
+</div>
+<button class="h-20 border-l border-outline-variant/10 hover:bg-surface-container transition-all"></button>
+</div>
+<!-- Show more hint -->
+<div class="p-4 text-center bg-surface-container-high/20 border-t border-outline-variant/10">
+<button class="text-xs font-bold text-primary/40 uppercase tracking-widest hover:text-primary transition-colors flex items-center justify-center w-full gap-2">
+                                    Voir les créneaux de l'après-midi (jusqu'à 21h)
+                                    <span class="material-symbols-outlined" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Bento Grid: Reservation Summary & Stats -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Summary Card -->
+<div class="md:col-span-8 bg-primary-container text-white rounded-xl p-8 flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline text-2xl font-bold mb-2">Prêt pour votre match ?</h3>
+<p class="text-on-primary-container max-w-sm mb-6">Vous avez sélectionné le Court 2 (Terre Battue) le 14 Août à 08:00.</p>
+<div class="flex gap-4">
+<button class="bg-secondary text-white font-headline font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition-transform">Confirmer la réservation</button>
+<button class="bg-white/10 backdrop-blur-md text-white font-headline font-bold py-3 px-8 rounded-full border border-white/10 hover:bg-white/20 transition-all">Annuler</button>
+</div>
+</div>
+<div class="hidden lg:block absolute right-0 top-0 h-full w-1/2 opacity-20 pointer-events-none">
+<img alt="Détail tennis" class="w-full h-full object-cover" data-alt="close-up of a tennis ball resting on a bright clay court surface with sharp shadows and vibrant orange texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDRNHIxXMwHy3IQeBakMvIG8OL1oPqqonqydJ1bz7714idNdVzV170k1AYnS_dDEQwBZoeU78Ko8CvjtCVDPwhYBdPY9knsAhIMuRXD0THvmA2AbGIL7EDO68slNXdjUmdYYqAvRw-UKf1_IaTpAv8OntxDbKzdNkedAjMlorPxl6J_Tm6gcNaBK3fsS5cLQyyialxl_kTNTrwReVDs5vaDnKIkMiSXJ2CsRNwlXLQhoSjJWaCaaRpUFFeTVAIVXw69MxXciXW7yM"/>
+</div>
+</div>
+<!-- Availability Stats Card -->
+<div class="md:col-span-4 bg-surface-container-high rounded-xl p-8 flex flex-col justify-center">
+<h4 class="text-on-surface-variant text-xs font-bold uppercase tracking-widest mb-6">Disponibilité Temps Réel</h4>
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<span class="text-sm font-medium">Occupation Actuelle</span>
+<span class="text-2xl font-headline font-black text-primary">68%</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 68%"></div>
+</div>
+<p class="text-[11px] text-on-surface-variant/60 leading-tight">L'affluence est modérée. Les courts en résine sont les plus demandés en ce moment.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer (Sub-context) -->
+<footer class="mt-20 py-12 border-t border-outline-variant/10 grid grid-cols-1 md:grid-cols-4 gap-12">
+<div class="md:col-span-2">
+<h3 class="font-lexend font-black text-emerald-900 text-2xl tracking-tighter mb-4">Tennis Club du François</h3>
+<p class="text-sm text-on-surface-variant/70 max-w-md leading-relaxed">
+                    L'excellence du tennis au cœur de la Martinique. Des infrastructures haut de gamme pour les passionnés du jeu.
+                </p>
+</div>
+<div>
+<h4 class="font-headline font-bold text-sm text-primary mb-6">Navigation</h4>
+<ul class="space-y-3">
+<li><a class="text-xs font-medium text-emerald-800/50 hover:text-orange-500 transition-colors" href="#">Mes Réservations</a></li>
+<li><a class="text-xs font-medium text-emerald-800/50 hover:text-orange-500 transition-colors" href="#">Tarifs Club</a></li>
+<li><a class="text-xs font-medium text-emerald-800/50 hover:text-orange-500 transition-colors" href="#">Règlement Intérieur</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline font-bold text-sm text-primary mb-6">Support</h4>
+<ul class="space-y-3">
+<li><a class="text-xs font-medium text-emerald-800/50 hover:text-orange-500 transition-colors" href="#">Aide en ligne</a></li>
+<li><a class="text-xs font-medium text-emerald-800/50 hover:text-orange-500 transition-colors" href="#">Contact Secrétariat</a></li>
+<li><a class="text-xs font-medium text-emerald-800/50 hover:text-orange-500 transition-colors" href="#">Mentions Légales</a></li>
+</ul>
+</div>
+<div class="md:col-span-4 text-center pt-12 border-t border-outline-variant/5">
+<p class="font-manrope text-xs tracking-wide text-emerald-800/50">© 2024 Club de Tennis du François - Martinique</p>
+</div>
+</footer>
+</main>
+<!-- Contextual FAB (Only for booking intent) -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-secondary text-white rounded-full flex items-center justify-center shadow-Ambient hover:scale-110 active:scale-90 transition-all z-[60] group md:hidden">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</body></html>
