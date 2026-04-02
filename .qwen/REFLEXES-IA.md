@@ -129,10 +129,62 @@ find src -name "*.tsx" | grep -i dashboard
 
 ---
 
-### 6. ✅ Appliquer le Protocole de Logging
+### 6. ✅ Utiliser l'Agent Logger pour le Debugging
 
-**QUAND :** Tu crées/modifies une Server Action ou un composant Page  
-**ALORS :** Implémente le logging structuré comme défini dans `docs/LOGGING_PROTOCOL.md`
+**QUAND :**
+- Tu crées une nouvelle Server Action
+- Tu crées une nouvelle Page/Layout
+- Tu débogues un problème de données
+- Tu fais une review de code
+
+**ALORS :** Invoque `@agent-logger` pour implémenter le protocole de logging structuré
+
+**Comment invoquer l'agent :**
+
+```bash
+# Exemple 1 : Nouvelle Server Action
+@agent-logger "Crée la Server Action getMemberDashboardData avec les logs de debug complets"
+
+# Exemple 2 : Ajouter des logs existants
+@agent-logger "Ajoute les logs de debug dans src/app/dashboard/actions.ts"
+
+# Exemple 3 : Débogage
+@agent-logger "Les données ne s'affichent pas dans le dashboard, ajoute des logs pour tracer le problème"
+
+# Exemple 4 : Review
+@agent-logger "Vérifie que tous les logs sont correctement implémentés dans le Dashboard Admin"
+```
+
+**Protocole de Logging à respecter :**
+
+| Niveau | Méthode | Quand l'utiliser | Exemple |
+|--------|---------|------------------|---------|
+| **Log** | `console.log()` | Flux d'exécution normal | Entrée/sortie de fonction |
+| **Info** | `console.info()` | Données importantes | Résultats d'API, données brutes |
+| **Warn** | `console.warn()` | Situations inattendues non bloquantes | Valeur par défaut utilisée |
+| **Error** | `console.error()` | Erreurs critiques | Échec d'appel API, exception |
+
+**Structure des logs :**
+
+```typescript
+// ✅ TOUJOURS préfixer par le contexte
+console.log('[Admin Dashboard] Entrée dans getAdminDashboardData...');
+console.info('[Admin Dashboard] Données brutes:', data);
+console.error('[Admin Dashboard] Erreur Supabase (reservations):', error);
+
+// ❌ À NE PAS FAIRE
+console.log('Erreur dans la fonction');
+console.log(data);
+```
+
+**Pourquoi :** Débogage rapide, traçabilité complète, logs cohérents dans toute l'app
+
+---
+
+### 7. ✅ Appliquer le Protocole de Logging (Manuel)
+
+**QUAND :** Tu crées/modifies une Server Action ou un composant Page ET tu n'as pas invoqué l'agent logger  
+**ALORS :** Implémente manuellement le logging structuré comme défini dans `docs/LOGGING_PROTOCOL.md`
 
 **Règles :**
 1. **Prefixe chaque log** : `[Contexte] Description`
@@ -181,13 +233,15 @@ export default async function AdminDashboardPage() {
 
 ---
 
-### 7. ✅ Fichiers de Référence à Connaître
+### 8. ✅ Fichiers de Référence à Connaître
 
 | Fichier | Rôle |
 |---------|------|
 | `docs/00-START-HERE.md` | **FICHIER PRINCIPAL** - État du projet + méthodologie |
 | `docs/PROJECT_TRACKER.md` | Suivi des écrans (15 écrans) |
 | `docs/LOGGING_PROTOCOL.md` | **Protocole de logging** - À appliquer dans TOUTES les pages |
+| `docs/DEBUGGING_GUIDE.md` | **Guide de debugging** - Scénarios courants + checklist |
+| `agents/agent-logger.md` | **Agent spécialisé** - Logs de debug dans Server Actions et Pages |
 | `scripts/GUIDE-SEED-DATABASE.md` | Méthodologie de remplissage DB |
 | `scripts/` | Tous les scripts SQL et shell |
 | `.qwen/REFLEXES-IA.md` | **CE FICHIER** - Réflexes IA à appliquer |
@@ -219,12 +273,13 @@ Dès le début d'une nouvelle discussion, l'IA doit :
    - UI Stitch → `stitch-ui-integrator`
    - SQL → `sql-generator`
    - Review → `db-reviewer`
+   - **Logs/Debug → `agent-logger`**
 
 5. **Appliquer les réflexes** :
    - Automatiser SQL
    - Vérifier build
    - Mettre à jour docs
-   - **Ajouter logs de debug**
+   - **Invoquer @agent-logger pour les logs**
 
 ---
 
@@ -345,7 +400,7 @@ npx supabase status
 2. "Est-ce que j'automatise l'exécution SQL ?"
 3. "Est-ce que le build passe ?"
 4. "Est-ce que la doc est à jour ?"
-5. **"Est-ce que j'ai mis les logs de debug ?"**
+5. **"Est-ce que j'ai invoqué @agent-logger pour les logs ?"**
 
 **Logs à vérifier en priorité :**
 ```bash
@@ -356,7 +411,11 @@ npm run dev 2>&1 | grep -E "\[.*\]"
 # Ouvrir Console (F12) → Filtrer par "[Client Page]"
 ```
 
-**Fichier à consulter :** `docs/00-START-HERE.md` + `docs/LOGGING_PROTOCOL.md`
+**Fichiers à consulter :**
+- `docs/00-START-HERE.md` (état du projet)
+- `docs/LOGGING_PROTOCOL.md` (protocole de logging)
+- `docs/DEBUGGING_GUIDE.md` (guide complet de debugging)
+- `agents/agent-logger.md` (agent spécialisé pour les logs)
 
 ---
 
@@ -373,6 +432,7 @@ npm run dev 2>&1 | grep -E "\[.*\]"
 | **Server Actions (mutations)** | `server-actions-builder` | "Créer Server Action pour X avec validation Zero-Trust" |
 | **Scripts SQL production** | `sql-generator` | "Générer script SQL pour table X avec RLS" |
 | **Connecter UI → Backend** | `stitch-ui-integrator` | "Intégrer Server Action dans composant Stitch" |
+| **🪵 Logs de debug** | `agent-logger` | "Ajouter logs de debug dans Server Actions et Pages" |
 | **Recherche code** | `Explore` | "Trouver tous les composants X dans le codebase" |
 | **Tâche complexe multi-étapes** | `general-purpose` | "Rechercher X et faire Y" |
 
@@ -381,4 +441,4 @@ npm run dev 2>&1 | grep -E "\[.*\]"
 **Document à lire au début de CHAQUE nouvelle discussion.**  
 **Objectif :** Rendre l'IA efficace, autonome, et cohérente dès le premier message.
 
-**Mise à jour v2 :** Ajout utilisation obligatoire des agents spécialisés + protocole de logging.
+**Mise à jour v3 :** Ajout agent-logger comme réflexe obligatoire + section debugging enrichie
