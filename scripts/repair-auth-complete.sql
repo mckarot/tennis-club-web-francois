@@ -96,7 +96,23 @@ DROP FUNCTION IF EXISTS public.handle_new_user() CASCADE;
 
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  full_name_text TEXT;
+  first_name TEXT;
+  last_name TEXT;
 BEGIN
+  -- Extraire full_name des métadonnées
+  full_name_text := NEW.raw_user_meta_data->>'full_name';
+
+  -- Séparer nom et prénom (simple logique : premier mot = prénom, le reste = nom)
+  IF full_name_text IS NOT NULL AND full_name_text <> '' THEN
+    first_name := split_part(full_name_text, ' ', 1);
+    last_name := trim(substring(full_name_text from (length(split_part(full_name_text, ' ', 1)) + 2)));
+  ELSE
+    first_name := '';
+    last_name := 'Utilisateur';
+  END IF;
+
   -- Créer entrée dans public.users
   INSERT INTO public.users (id, email, role)
   VALUES (
@@ -113,13 +129,13 @@ BEGIN
   INSERT INTO public.profiles (user_id, nom, prenom, role)
   VALUES (
     NEW.id,
-    COALESCE(NEW.raw_user_meta_data->>'nom', 'Utilisateur'),
-    COALESCE(NEW.raw_user_meta_data->>'prenom', ''),
+    COALESCE(last_name, 'Utilisateur'),
+    COALESCE(first_name, ''),
     COALESCE((NEW.raw_user_meta_data->>'role')::user_role, 'membre'::user_role)
   )
   ON CONFLICT (user_id) DO UPDATE SET
-    nom = COALESCE(NEW.raw_user_meta_data->>'nom', 'Utilisateur'),
-    prenom = COALESCE(NEW.raw_user_meta_data->>'prenom', ''),
+    nom = COALESCE(last_name, 'Utilisateur'),
+    prenom = COALESCE(first_name, ''),
     role = COALESCE((NEW.raw_user_meta_data->>'role')::user_role, 'membre'::user_role),
     updated_at = NOW();
 
