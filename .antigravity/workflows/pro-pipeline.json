@@ -1,0 +1,143 @@
+{
+  "version": "2.0.0",
+  "project": "tennis-club-francois",
+  "stack": "Next.js 16 · React 19 · Supabase · Drizzle ORM · Tailwind v4 · Zod v4",
+  "description": "Pipeline Pro — Production Grade avec Drizzle ORM + Zero-Trust Security",
+  "workflows": {
+    "gate1": {
+      "name": "Gate 1 — Data Architecture (Drizzle + RLS)",
+      "trigger": "/gate1",
+      "agent": ".agent/db_agent.md",
+      "description": "Schéma Drizzle + migrations + indexes + RLS + seed",
+      "criteria": [
+        "Helpers timestamps/softDelete/primaryKeyUUID utilisés",
+        "Trigger updated_at sur toutes les tables",
+        "Migration générée (drizzle-kit generate) et révisée",
+        "Migration testée sur émulateur local",
+        "Indexes justifiés et définis dans le schéma",
+        "Politiques RLS créées + testées (supabase test db)",
+        "FK avec onDelete explicite (restrict ou cascade)",
+        "Seed data idempotente et réaliste",
+        "EXPLAIN ANALYZE validé sur requêtes critiques"
+      ],
+      "validation": "BINAIRE : Tous les 9 critères ✅ = PASS, sinon FAIL"
+    },
+    "gate2": {
+      "name": "Gate 2 — UI & Performance (Design Tokens + 4 états)",
+      "trigger": "/gate2",
+      "agent": ".agent/design_agent.md",
+      "description": "4 états UI + design tokens OKLCH + accessibilité + SEO",
+      "criteria": [
+        "4 états UI : Skeleton, Empty, Error Boundary, Optimistic",
+        "Formulaires : validation inline + aria-invalid + role=alert",
+        "Dark mode : aucune couleur en dur, tout via CSS tokens",
+        "Design tokens centralisés (lib/tokens.ts)",
+        "Navigation : redirect post-login + breadcrumbs",
+        "Lighthouse : LCP < 2.5s, CLS < 0.1",
+        "Test clavier + axe DevTools sans violation",
+        "next/image avec sizes sur toutes les images",
+        "SEO : title + description + Open Graph + sitemap + robots"
+      ],
+      "validation": "BINAIRE : Tous les 9 critères ✅ = PASS, sinon FAIL"
+    },
+    "gate3": {
+      "name": "Gate 3 — Security Zero-Trust (RLS + Auth + CSP)",
+      "trigger": "/gate3",
+      "agent": ".agent/security_agent.md",
+      "description": "RLS exhaustive + Auth + CSP + Rate Limiting + Error Masking + Audit",
+      "criteria": [
+        "CSP headers configurés et testés",
+        "RLS activée sur TOUTES les tables",
+        "Aucune policy FOR ALL USING (true)",
+        "Storage buckets : politiques taille/MIME en SQL",
+        "getUser() côté serveur — zéro getSession()",
+        "SUPABASE_SERVICE_ROLE_KEY jamais exposée",
+        "Rate Limiting sur routes API et Server Actions sensibles",
+        "Error Masking : zéro code PostgREST exposé",
+        "Rôles via app_metadata (JWT) — pas de SELECT users",
+        "Audit Logging sur toutes les actions admin",
+        "Révocation de session documentée",
+        "Rotation des secrets planifiée"
+      ],
+      "validation": "BINAIRE : Tous les 12 critères ✅ = PASS, sinon FAIL"
+    },
+    "gate4": {
+      "name": "Gate 4 — QA & Tests (Coverage > 80%)",
+      "trigger": "/gate4",
+      "agent": ".agent/dev_agent.md",
+      "description": "Tests unitaires + intégration + E2E + coverage + build",
+      "criteria": [
+        "eslint --max-warnings 0",
+        "tsc --noEmit",
+        "Tests unitaires verts (coverage > 80% fichiers modifiés)",
+        "Tests E2E critiques verts (Playwright)",
+        "supabase test db : RLS validées",
+        "next build réussi sans erreur",
+        "Smoke tests post-déploiement passés"
+      ],
+      "validation": "BINAIRE : Tous les 7 critères ✅ = PASS, sinon FAIL"
+    },
+    "audit": {
+      "name": "Audit Complet Sécurité + Architecture",
+      "trigger": "/audit",
+      "agents": [".agent/security_agent.md", ".agent/db_agent.md"],
+      "template": ".agent/audit_complet_template.md",
+      "description": "Audit complet combinant Gate 1 + Gate 3",
+      "output": "docs/audit/AUDIT-COMPLET-YYYY-MM-DD.md"
+    },
+    "fix": {
+      "name": "Correction Bug avec Tests",
+      "trigger": "/fix",
+      "description": "Diagnostic + fix + test de non-régression",
+      "steps": [
+        "Identifier le bug et le contexte",
+        "Écrire un test qui reproduit le bug (doit échouer)",
+        "Appliquer le fix minimal",
+        "Vérifier que le test passe",
+        "Relancer lint + type-check + build"
+      ],
+      "validation": "Test ajouté + bug corrigé + tous les checks passent"
+    },
+    "new-feature": {
+      "name": "Nouvelle Feature Complète (Pipeline 4 Gates)",
+      "trigger": "/new-feature",
+      "description": "Implémente une feature de A à Z en passant par les 4 gates",
+      "sequence": [
+        "Gate 0 : Remplir docs/specs/SPEC-<feature>.md (stack, structure, env vars)",
+        "Gate 1 : DB_AGENT — schéma Drizzle + migrations + RLS",
+        "Gate 2 : DESIGN_AGENT — composants UI + 4 états + tokens",
+        "Gate 3 : SECURITY_AGENT — audit RLS + CSP + rate limiting",
+        "Gate 4 : DEV_AGENT — Server Actions + tests + coverage",
+        "Validation finale : ORCHESTRATOR — Definition of Done (6 critères)"
+      ],
+      "done_definition": [
+        "lint et type-check passent",
+        "Tests unitaires verts (coverage > 80%)",
+        "Migration Drizzle générée, testée, commitée",
+        "Politiques RLS validées par SECURITY_AGENT",
+        "Build de production réussi (next build)",
+        "Consignée dans ADR si décision d'architecture"
+      ]
+    },
+    "adr": {
+      "name": "Créer un Architecture Decision Record",
+      "trigger": "/adr",
+      "description": "Documente une décision d'architecture suivant le template ADR",
+      "output": "docs/adr/ADR-NNN-titre.md"
+    }
+  },
+  "context_critical_paths": [
+    ".agent/orchestrator.md",
+    ".agent/audit_complet_template.md",
+    ".agent/db_schema_template.md",
+    "docs/specs/",
+    "docs/adr/",
+    "drizzle/migrations/",
+    "supabase/migrations/"
+  ],
+  "conflict_resolution": {
+    "security_vs_functional": "SECURITY_AGENT bloque → DEV_AGENT propose alternative via Server Actions (jamais affaiblir RLS)",
+    "debt_vs_velocity": "Toute implémentation sans test est refusée — pas de dérogation",
+    "priority_order": ["SECURITY", "DB_AGENT", "DEV_AGENT", "DESIGN_AGENT"]
+  }
+}
