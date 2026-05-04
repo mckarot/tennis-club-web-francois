@@ -48,7 +48,12 @@ export default async function AdminDashboardLayout({
   }
 
   const nomComplet = `${profile.prenom || ''} ${profile.nom || ''}`.trim() || user.email?.split('@')[0] || 'Admin';
-  const avatarUrl = profile.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(nomComplet)}&background=01261f&color=fff&size=128`;
+  
+  // Construction de l'URL complète pour PocketBase
+  const pbUrl = process.env.NEXT_PUBLIC_PB_URL || process.env.PB_URL || '';
+  const avatarUrl = profile.avatar_url 
+    ? `${pbUrl}/api/files/${profile.collectionId}/${profile.id}/${profile.avatar_url}`
+    : `https://ui-avatars.com/api/?name=${encodeURIComponent(nomComplet)}&background=01261f&color=fff&size=128`;
 
   return (
     <div className="flex min-h-screen bg-surface">

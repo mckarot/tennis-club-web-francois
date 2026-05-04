@@ -85,6 +85,10 @@ export type DashboardData = {
   courts: CourtWithOccupation[];
   dernieresReservations: ReservationWithDetails[];
   membresRecents: MemberWithProfile[];
+  adminProfile: {
+    fullName: string;
+    avatarUrl: string | null;
+  };
 };
 
 // ============================================================================

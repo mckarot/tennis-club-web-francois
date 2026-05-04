@@ -104,10 +104,17 @@ export async function getAdminDashboardData(): Promise<ActionResult<DashboardDat
   console.log('[Admin Dashboard] Entrée dans getAdminDashboardData...');
   try {
     // Vérification admin (Zero-Trust)
-    await requireAdmin();
+    const adminUser = await requireAdmin();
     console.log('[Admin Dashboard] Vérification admin réussie.');
     
     const pb = await createAdminClient();
+    
+    // Récupération du profil admin pour l'affichage header
+    const adminProfile = await pb.collection('profiles').getFirstListItem(`user="${adminUser.id}"`);
+    const pbUrl = process.env.NEXT_PUBLIC_PB_URL || process.env.PB_URL || '';
+    const adminAvatarUrl = adminProfile.avatar_url 
+      ? `${pbUrl}/api/files/${adminProfile.collectionId}/${adminProfile.id}/${adminProfile.avatar_url}`
+      : null;
     
     const today = new Date().toISOString().split('T')[0];
     const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
@@ -223,6 +230,10 @@ export async function getAdminDashboardData(): Promise<ActionResult<DashboardDat
       courts: formattedCourts,
       dernieresReservations,
       membresRecents: membresRecentsFormatted,
+      adminProfile: {
+        fullName: `${adminProfile.prenom || ''} ${adminProfile.nom || ''}`.trim() || 'Admin',
+        avatarUrl: adminAvatarUrl,
+      }
     });
     
   } catch (error) {

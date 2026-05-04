@@ -152,10 +152,22 @@ export async function getMemberDashboardData(): Promise<ActionResult<MemberDashb
       console.warn('[Member Dashboard] Erreur lors de la récupération de l\'événement:', eventError);
     }
 
+    // Construction de l'URL de l'avatar
+    const pbUrl = process.env.NEXT_PUBLIC_PB_URL || process.env.PB_URL || '';
+    const fileName = (profile as any).avatar_url || (profile as any).photo_url;
+    const fullAvatarUrl = fileName 
+      ? `${pbUrl}/api/files/${(profile as any).collectionId}/${(profile as any).id}/${fileName}` 
+      : undefined;
+
     return {
       success: true,
       data: {
-        profile: profile as any,
+        profile: {
+          nom: (profile as any).nom,
+          prenom: (profile as any).prenom,
+          role: (profile as any).role,
+          avatar_url: fullAvatarUrl,
+        },
         nextReservation: nextRes,
         courtsStatus,
         clubEvent

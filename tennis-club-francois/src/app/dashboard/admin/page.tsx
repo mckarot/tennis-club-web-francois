@@ -28,8 +28,9 @@ export default async function AdminDashboardPage() {
   return (
     <>
       <AdminHeader 
-        title="Bonjour, Administrateur" 
+        title={`Bonjour, ${data.adminProfile.fullName}`} 
         subtitle={`Club du François, Martinique • ${formattedDate}`}
+        adminProfile={data.adminProfile}
       />
 
       {/* Bento Grid */}

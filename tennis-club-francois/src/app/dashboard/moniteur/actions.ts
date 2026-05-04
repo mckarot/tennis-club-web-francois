@@ -130,7 +130,9 @@ export async function getMoniteurDashboardData() {
   return {
     profile: {
       fullName: `${profile?.prenom || ''} ${profile?.nom || ''}`.trim() || 'Coach',
-      avatarUrl: profile?.avatar_url,
+      avatarUrl: profile?.avatar_url 
+        ? `${process.env.NEXT_PUBLIC_PB_URL || process.env.PB_URL}/api/files/${profile.collectionId}/${profile.id}/${profile.avatar_url}` 
+        : null,
     },
     stats: {
       sessionsToday: sessionsToday.length,
