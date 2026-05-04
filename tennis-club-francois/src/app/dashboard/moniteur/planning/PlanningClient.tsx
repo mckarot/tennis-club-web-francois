@@ -89,19 +89,22 @@ export default function PlanningClient({
           <div className="overflow-x-auto overflow-y-visible">
             <table className="w-full min-w-[800px] border-collapse table-fixed">
               <thead>
-                <tr className="text-left text-[10px] uppercase font-black tracking-widest text-emerald-900/40">
-                  <th className="py-6 w-20 font-black">Heure</th>
+                <tr className="bg-emerald-100/40 border-b-2 border-emerald-900/20">
+                  <th className="py-5 w-20 text-center font-black text-[10px] uppercase tracking-widest text-emerald-900/60 border-r-2 border-emerald-900/10">Heure</th>
                   {weekDays.map((day, idx) => (
-                    <th key={idx} className={`py-6 px-2 font-black text-center ${day.isToday ? 'text-secondary' : 'text-emerald-950'}`}>
-                      {day.name}
+                    <th key={idx} className={`py-5 px-2 font-black text-center border-r border-emerald-900/10 last:border-r-0 ${day.isToday ? 'bg-secondary/10 text-secondary' : 'text-emerald-950'}`}>
+                      <div className="text-[10px] opacity-50 mb-1 font-bold">{day.name.split(' ')[0]}</div>
+                      <div className="text-lg leading-none font-extrabold">{day.name.split(' ')[1]}</div>
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-emerald-900/5">
+              <tbody className="divide-y-2 divide-emerald-900/10">
                 {hours.map((hour) => (
-                  <tr key={hour} className="group h-28">
-                    <td className="py-6 text-xs font-bold text-emerald-900/40 align-top">{hour}h</td>
+                  <tr key={hour} className={`group transition-colors ${hour % 2 === 0 ? 'bg-white' : 'bg-emerald-50/40'}`}>
+                    <td className="py-8 text-center text-xs font-black text-emerald-900/70 align-middle border-r-2 border-emerald-900/10 bg-emerald-100/20">
+                      {hour}h
+                    </td>
                     {weekDays.map((day, dayIdx) => {
                       const dayRes = findReservations(day.date, hour);
                       const myRes = dayRes.find((r: any) => r.isMine);
@@ -110,11 +113,11 @@ export default function PlanningClient({
                       const freeCourtsCount = totalCourts - dayRes.length;
                       
                       return (
-                        <td key={dayIdx} className="px-1.5 py-2">
-                          <div className="h-full flex flex-col gap-1.5">
+                        <td key={dayIdx} className={`px-2 py-3 border-r border-emerald-900/10 last:border-r-0 transition-all duration-300 relative ${day.isToday ? 'bg-secondary/[0.03]' : ''}`}>
+                          <div className="min-h-[100px] flex flex-col gap-2">
                             {/* 1. My Reservation Priority */}
                             {myRes && (
-                              <div className={`rounded-xl p-3 flex flex-col justify-between shadow-sm border-l-4 group/card ${
+                              <div className={`rounded-xl p-3 flex flex-col justify-between shadow-md border-l-4 transform hover:scale-[1.02] transition-all duration-300 group/card ${
                                 myRes.type === 'cours' || myRes.course_type
                                 ? 'bg-secondary text-white border-secondary-container' 
                                 : 'bg-emerald-950 text-white border-emerald-800'
@@ -136,13 +139,11 @@ export default function PlanningClient({
 
                             {/* 2. Other Reservations Summary */}
                             {otherRes.length > 0 && !myRes && (
-                              <div className="rounded-xl p-2 bg-emerald-50/50 border border-emerald-900/5 text-emerald-900/40">
-                                <div className="flex items-center gap-1.5">
-                                  <span className="material-symbols-outlined text-xs">group</span>
-                                  <span className="text-[9px] font-black uppercase tracking-tight">
-                                    {otherRes.length} Occupé{otherRes.length > 1 ? 's' : ''}
-                                  </span>
-                                </div>
+                              <div className="rounded-xl p-2.5 bg-white border border-emerald-900/20 text-emerald-900/70 shadow-sm flex items-center gap-2">
+                                <span className="material-symbols-outlined text-sm text-secondary">group</span>
+                                <span className="text-[9px] font-black uppercase tracking-tight">
+                                  {otherRes.length} Court{otherRes.length > 1 ? 's' : ''} Occupé{otherRes.length > 1 ? 's' : ''}
+                                </span>
                               </div>
                             )}
 
@@ -156,7 +157,7 @@ export default function PlanningClient({
                                   });
                                   setIsModalOpen(true);
                                 }}
-                                className={`w-full rounded-xl border-2 border-dashed border-emerald-900/5 flex items-center justify-center text-emerald-900/20 hover:border-emerald-600/30 hover:bg-emerald-50/50 hover:text-emerald-600/50 transition-all duration-300 group ${myRes || otherRes.length > 0 ? 'py-2' : 'h-full flex-grow'}`}
+                                className={`w-full rounded-xl border-2 border-dashed border-emerald-900/20 flex items-center justify-center text-emerald-900/30 hover:border-secondary/60 hover:bg-secondary/10 hover:text-secondary transition-all duration-300 group ${myRes || otherRes.length > 0 ? 'py-2 mt-auto' : 'flex-grow'}`}
                               >
                                 <span className={`material-symbols-outlined group-hover:rotate-90 transition-transform duration-500 ${myRes || otherRes.length > 0 ? 'text-lg' : 'text-2xl'}`}>add</span>
                                 {(myRes || otherRes.length > 0) && <span className="text-[9px] font-black uppercase ml-1">{freeCourtsCount} Libres</span>}
@@ -164,7 +165,8 @@ export default function PlanningClient({
                             )}
                             
                             {freeCourtsCount === 0 && !myRes && (
-                              <div className="h-full w-full bg-secondary/5 rounded-xl border border-secondary/10 flex items-center justify-center text-secondary/40">
+                              <div className="h-full flex-grow w-full bg-secondary/5 rounded-xl border border-secondary/20 flex flex-col items-center justify-center text-secondary/40 gap-1">
+                                <span className="material-symbols-outlined text-lg">block</span>
                                 <span className="text-[9px] font-black uppercase">Complet</span>
                               </div>
                             )}
