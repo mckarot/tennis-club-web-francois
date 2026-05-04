@@ -6,6 +6,7 @@ import { getMemberDashboardData, type MemberDashboardData } from './actions';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import ReservationModal from '@/components/dashboard/membre/ReservationModal';
+import EventDetailModal from '@/components/dashboard/membre/EventDetailModal';
 
 export default function MembreDashboardPage() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function MembreDashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [selectedCourtId, setSelectedCourtId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -296,7 +298,7 @@ export default function MembreDashboardPage() {
                     )}
                   </div>
                   <button 
-                    onClick={() => data.clubEvent?.link && window.open(data.clubEvent.link, '_blank')}
+                    onClick={() => setIsEventModalOpen(true)}
                     className="w-16 h-16 bg-white text-[#01261f] rounded-full flex items-center justify-center hover:bg-[#9b4426] hover:text-white transition-all shadow-2xl active:scale-90 group/nav"
                   >
                     <span className="material-symbols-outlined text-3xl group-hover/nav:translate-x-1 transition-transform">chevron_right</span>
@@ -318,6 +320,12 @@ export default function MembreDashboardPage() {
         onClose={() => { setIsModalOpen(false); }} 
         initialCourtId={selectedCourtId}
         courts={data.courtsStatus}
+      />
+
+      <EventDetailModal
+        isOpen={isEventModalOpen}
+        onClose={() => setIsEventModalOpen(false)}
+        event={data.clubEvent}
       />
     </div>
   );

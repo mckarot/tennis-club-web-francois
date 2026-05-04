@@ -38,6 +38,7 @@ export type MemberDashboardData = {
     description: string;
     category: string;
     image?: string;
+    details?: string;
     participantsCount: number;
     link?: string;
   } | null;
@@ -142,6 +143,7 @@ export async function getMemberDashboardData(): Promise<ActionResult<MemberDashb
           description: e.description,
           category: e.category,
           image: e.image ? `${process.env.NEXT_PUBLIC_PB_URL || process.env.PB_URL}/api/files/${e.collectionId}/${e.id}/${e.image}` : undefined,
+          details: e.details || undefined,
           participantsCount: e.participants_count || 0,
           link: e.link || undefined
         };
