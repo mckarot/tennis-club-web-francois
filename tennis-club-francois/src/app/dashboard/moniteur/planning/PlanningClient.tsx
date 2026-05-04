@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 import AddCourseModal from './AddCourseModal';
 
 interface PlanningClientProps {
@@ -25,6 +26,19 @@ export default function PlanningClient({
 }: PlanningClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<{ date: string; startTime: string } | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Handle auto-open modal from query param
+  useEffect(() => {
+    if (searchParams.get('add') === 'true') {
+      setIsModalOpen(true);
+      // Optional: remove the param from URL to avoid re-opening on refresh
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete('add');
+      router.replace(`?${params.toString()}`, { scroll: false });
+    }
+  }, [searchParams, router]);
   
   // Reconstruct dates from the serialized data
   const weekDays = initialWeekDays.map(wd => ({
