@@ -1,6 +1,84 @@
 'use server';
 
-import { createClient } from '@/lib/pocketbase/server';
+import { createClient, createAdminClient } from '@/lib/pocketbase/server';
+import { revalidatePath } from 'next/cache';
+import type { ActionResult } from '@/lib/types/actions';
+
+export async function updateMemberProfileAction(
+  prevState: ActionResult<any>,
+  formData: FormData
+): Promise<ActionResult<any>> {
+  const pb = await createClient();
+  
+  // Vérification de sécurité de base
+  if (!pb.authStore.isValid) return { success: false, error: 'Non authentifié', code: 'UNAUTHORIZED' };
+
+  // Utilisation du client ADMIN pour les modifications
+  const adminPb = await createAdminClient();
+
+  const memberId = formData.get('memberId') as string;
+  const nom = formData.get('nom') as string;
+  const prenom = formData.get('prenom') as string;
+  const role = formData.get('role') as string;
+  const phone = formData.get('phone') as string;
+  const level = formData.get('level') as string;
+  const typeAbonnement = formData.get('typeAbonnement') as string;
+  const statutAdhesion = formData.get('statutAdhesion') as string;
+
+  try {
+    // 1. Mettre à jour le profil de base (profiles) - INDISPENSABLE
+    let profile;
+    try {
+      profile = await adminPb.collection('profiles').getFirstListItem(`user="${memberId}"`);
+    } catch (e) {
+      profile = await adminPb.collection('profiles').getOne(memberId);
+    }
+
+    await adminPb.collection('profiles').update(profile.id, {
+      nom,
+      prenom,
+      role
+    });
+
+    // 2. Mettre à jour le profil métier (member_profiles) - OPTIONNEL (ne doit pas tout faire planter)
+    const realUserId = profile.user;
+    try {
+      let memberProfile;
+      try {
+        memberProfile = await adminPb.collection('member_profiles').getFirstListItem(`user="${realUserId}"`);
+        await adminPb.collection('member_profiles').update(memberProfile.id, {
+          telephone: phone,
+          niveau_tennis: level,
+          type_abonnement: typeAbonnement,
+          statut_adhesion: statutAdhesion
+        });
+      } catch (e) {
+        // Création si inexistant
+        await adminPb.collection('member_profiles').create({
+          user: realUserId,
+          telephone: phone,
+          niveau_tennis: level,
+          type_abonnement: typeAbonnement,
+          statut_adhesion: statutAdhesion
+        });
+      }
+    } catch (memberError: any) {
+      console.warn('Erreur non-bloquante sur member_profiles:', memberError.data);
+      // On continue quand même car le profil principal est à jour
+    }
+
+    revalidatePath(`/dashboard/admin/membres/${memberId}`);
+    return { success: true, message: 'Profil mis à jour avec succès' };
+  } catch (error: any) {
+    console.error('Erreur critique updateMemberProfileAction:', error);
+    // On renvoie les détails de validation si disponibles
+    const details = error.data?.data ? JSON.stringify(error.data.data) : '';
+    return { 
+      success: false, 
+      error: `${error.message} ${details}`.trim() || 'Erreur lors de la mise à jour' 
+    };
+  }
+}
 
 export async function getAdminMemberProfile(memberId: string) {
   const pb = await createClient();

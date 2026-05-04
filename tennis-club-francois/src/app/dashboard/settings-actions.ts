@@ -86,13 +86,13 @@ export async function updateProfile(data: Partial<UserProfileData>): Promise<Act
   try {
     const profile = await adminPb.collection('profiles').getFirstListItem(`user="${user.id}"`);
     
-    // On met à jour toutes les informations disponibles
+    // 1. Mise à jour du profil de base
     const updateData = {
       nom: data.nom,
       prenom: data.prenom,
       telephone: data.telephone,
       bio: data.bio,
-      niveau: data.niveau,
+      niveau: data.niveau, // Doublon historique dans profiles
       adresse: data.adresse,
       code_postal: data.code_postal,
       ville: data.ville,
@@ -100,6 +100,25 @@ export async function updateProfile(data: Partial<UserProfileData>): Promise<Act
     };
 
     await adminPb.collection('profiles').update(profile.id, updateData);
+
+    // 2. Mise à jour du profil membre si nécessaire
+    if (profile.role === 'membre' && data.niveau) {
+      try {
+        const memberProfile = await adminPb.collection('member_profiles').getFirstListItem(`user="${user.id}"`);
+        await adminPb.collection('member_profiles').update(memberProfile.id, {
+          niveau_tennis: data.niveau,
+          telephone: data.telephone // On synchronise aussi le tel ici pour être sûr
+        });
+      } catch (e) {
+        // Création si inexistant
+        await adminPb.collection('member_profiles').create({
+          user: user.id,
+          niveau_tennis: data.niveau,
+          telephone: data.telephone,
+          statut_adhesion: 'actif'
+        });
+      }
+    }
     
     revalidatePath('/', 'layout');
     return success(undefined, 'Profil mis à jour avec succès');

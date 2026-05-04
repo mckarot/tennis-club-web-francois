@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getAdminMemberProfile } from './actions';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { MemberActions } from '@/components/dashboard/admin/MemberActions';
 
 const LEVEL_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   'NC': { label: 'Non Classé', color: 'text-slate-600', bg: 'bg-slate-100' },
@@ -12,7 +13,9 @@ const LEVEL_CONFIG: Record<string, { label: string; color: string; bg: string }>
   'beginner': { label: 'Débutant', color: 'text-emerald-700', bg: 'bg-emerald-50' },
   'intermédiaire': { label: 'Intermédiaire', color: 'text-amber-700', bg: 'bg-amber-50' },
   'intermediate': { label: 'Intermédiaire', color: 'text-amber-700', bg: 'bg-amber-50' },
+  'intermediaire': { label: 'Intermédiaire', color: 'text-amber-700', bg: 'bg-amber-50' },
   'avancé': { label: 'Avancé', color: 'text-orange-700', bg: 'bg-orange-50' },
+  'avance': { label: 'Avancé', color: 'text-orange-700', bg: 'bg-orange-50' },
   'pro': { label: 'Expert', color: 'text-violet-700', bg: 'bg-violet-50' },
   'expert': { label: 'Expert', color: 'text-violet-700', bg: 'bg-violet-50' },
 };
@@ -122,16 +125,7 @@ export default async function AdminMemberProfilePage({
           </div>
 
           {/* Actions admin */}
-          <div className="flex flex-col gap-3 flex-shrink-0">
-            <button className="bg-primary text-white px-6 py-2.5 rounded-full font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-md text-sm">
-              <span className="material-symbols-outlined text-base">edit</span>
-              Modifier le profil
-            </button>
-            <button className="bg-surface-container-high border border-outline-variant/30 text-error px-6 py-2.5 rounded-full font-bold flex items-center gap-2 hover:bg-error hover:text-white transition-all shadow-sm text-sm">
-              <span className="material-symbols-outlined text-base">block</span>
-              Suspendre
-            </button>
-          </div>
+          <MemberActions member={member} />
         </div>
 
         {/* Stats Row */}
