@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getMyProfileData, updateProfile, updateAvatar, changePassword, getNotificationSettings, updateNotificationSetting, type UserProfileData } from '@/app/dashboard/settings-actions';
+import { getMyProfileData, updateProfile, updateAvatar, changePassword, getNotificationSettings, updateNotificationSetting, deleteAccount, type UserProfileData } from '@/app/dashboard/settings-actions';
 
 export default function SettingsPageContent() {
   const [activeTab, setActiveTab] = useState<'profil' | 'securite' | 'notifications'>('profil');
@@ -184,6 +184,21 @@ export default function SettingsPageContent() {
       const resetResult = await getNotificationSettings();
       if (resetResult.success) setNotifSettings(resetResult.data);
       setMessage({ type: 'error', text: 'Erreur lors de la mise à jour des notifications' });
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm('Êtes-vous absolument sûr de vouloir supprimer votre compte ? Cette action est irréversible et toutes vos données (réservations, profil) seront perdues.')) {
+      return;
+    }
+
+    setSaving(true);
+    const result = await deleteAccount();
+    if (result.success) {
+      window.location.href = '/'; // Redirection vers l'accueil après suppression
+    } else {
+      setMessage({ type: 'error', text: result.error || 'Erreur lors de la suppression' });
+      setSaving(false);
     }
   };
 
@@ -382,21 +397,47 @@ export default function SettingsPageContent() {
                     </div>
                   </div>
 
-                  {/* Role Specific Fields */}
+                  {/* Section Abonnement & Licence (Membre uniquement) */}
                   {data?.role === 'membre' && (
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Niveau de tennis</label>
-                      <select 
-                        name="niveau"
-                        defaultValue={data?.niveau}
-                        className="w-full px-6 py-4 bg-emerald-900/5 rounded-2xl border-2 border-transparent focus:border-secondary focus:bg-white transition-all outline-none font-bold text-emerald-950 appearance-none"
-                      >
-                        <option value="">Non renseigné</option>
-                        <option value="debutant">Débutant</option>
-                        <option value="intermediaire">Intermédiaire</option>
-                        <option value="avance">Avancé</option>
-                        <option value="competition">Compétition</option>
-                      </select>
+                    <div className="pt-6 space-y-6">
+                      <div className="flex items-center gap-2 pb-2 border-b border-emerald-900/5">
+                        <span className="material-symbols-outlined text-emerald-900/40">card_membership</span>
+                        <h4 className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40">Abonnement & Licence</h4>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="p-6 rounded-3xl bg-emerald-900/5 border border-emerald-900/5 space-y-1">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/30">Type d'abonnement</p>
+                          <p className="font-bold text-emerald-950 capitalize">{data?.type_abonnement || 'Standard'}</p>
+                        </div>
+                        <div className="p-6 rounded-3xl bg-emerald-900/5 border border-emerald-900/5 space-y-1">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/30">Numéro de Licence FFT</p>
+                          <p className="font-bold text-emerald-950">{data?.licence_fft || 'Non renseignée'}</p>
+                        </div>
+                        <div className="p-6 rounded-3xl bg-emerald-900/5 border border-emerald-900/5 flex items-center justify-between">
+                          <div className="space-y-1">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/30">Certificat Médical</p>
+                            <p className="font-bold text-emerald-950">{data?.certificat_medical ? 'À jour' : 'Manquant / Expiré'}</p>
+                          </div>
+                          <span className={`material-symbols-outlined ${data?.certificat_medical ? 'text-emerald-500' : 'text-red-500'}`}>
+                            {data?.certificat_medical ? 'check_circle' : 'warning'}
+                          </span>
+                        </div>
+                        <div className="p-6 rounded-3xl bg-emerald-900/5 border border-emerald-900/5 space-y-1">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/30">Niveau de tennis</p>
+                          <select 
+                            name="niveau"
+                            defaultValue={data?.niveau_tennis || data?.niveau}
+                            className="w-full bg-transparent outline-none font-bold text-emerald-950 appearance-none"
+                          >
+                            <option value="">Non renseigné</option>
+                            <option value="debutant">Débutant</option>
+                            <option value="intermediaire">Intermédiaire</option>
+                            <option value="avance">Avancé</option>
+                            <option value="competition">Compétition</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -509,6 +550,31 @@ export default function SettingsPageContent() {
                     </button>
                   </div>
                 </form>
+
+                {/* Danger Zone */}
+                <div className="mt-12 pt-12 border-t-2 border-red-100 space-y-6">
+                  <div className="flex items-center gap-3 text-red-600">
+                    <span className="material-symbols-outlined">warning</span>
+                    <h3 className="font-headline text-xl font-black italic tracking-tighter">Zone de danger</h3>
+                  </div>
+                  
+                  <div className="p-8 rounded-[2rem] bg-red-50 border-2 border-red-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="space-y-1 text-center md:text-left">
+                      <h4 className="font-bold text-red-900">Supprimer mon compte</h4>
+                      <p className="text-sm text-red-900/60 leading-relaxed">
+                        Cette action est définitive. Toutes vos données seront effacées de nos serveurs.
+                      </p>
+                    </div>
+                    <button 
+                      type="button"
+                      onClick={handleDeleteAccount}
+                      disabled={saving}
+                      className="px-8 py-4 bg-red-600 text-white rounded-full font-black uppercase tracking-widest text-xs hover:bg-red-700 hover:shadow-xl hover:shadow-red-600/20 transition-all active:scale-95 disabled:opacity-50"
+                    >
+                      Supprimer définitivement
+                    </button>
+                  </div>
+                </div>
               </motion.div>
             )}
 

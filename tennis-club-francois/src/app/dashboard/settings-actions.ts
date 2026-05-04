@@ -18,6 +18,13 @@ export type UserProfileData = {
   code_postal?: string;
   ville?: string;
   date_naissance?: string;
+  // Champs membre
+  niveau_tennis?: string;
+  statut_adhesion?: string;
+  type_abonnement?: string;
+  licence_fft?: string;
+  certificat_medical?: boolean;
+  date_certificat?: string;
 };
 
 /**
@@ -40,8 +47,18 @@ export async function getMyProfileData(): Promise<ActionResult<UserProfileData>>
     const pbUrl = process.env.NEXT_PUBLIC_PB_URL || process.env.PB_URL || '';
     const fileName = profile.avatar_url || profile.photo_url;
     
+    let memberData = {};
+    if (profile.role === 'membre') {
+      try {
+        memberData = await adminPb.collection('member_profiles').getFirstListItem(`user="${user.id}"`);
+      } catch (e) {
+        // Pas grave s'il n'y a pas de profil membre encore
+      }
+    }
+
     const data = {
       ...profile,
+      ...memberData, // On fusionne les infos de membre (licence, abonnement, etc.)
       email: user.email,
       avatar_url: fileName 
         ? `${pbUrl}/api/files/${profile.collectionId}/${profile.id}/${fileName}` 
@@ -214,5 +231,29 @@ export async function updateNotificationSetting(type: string, canal: 'email' | '
   } catch (err: any) {
     console.error('Erreur notification:', err);
     return error('Impossible de mettre à jour la préférence', 'INTERNAL_ERROR');
+  }
+}
+
+/**
+ * Supprime définitivement le compte de l'utilisateur
+ */
+export async function deleteAccount(): Promise<ActionResult<void>> {
+  const pb = await createClient();
+  const user = pb.authStore.model;
+  if (!user) return error('Non authentifié', 'UNAUTHORIZED');
+
+  const adminPb = await createAdminClient();
+  try {
+    // La suppression de l'utilisateur dans 'users' supprimera par cascade ses profils 
+    // si les relations sont bien configurées en "Cascade delete" dans PocketBase.
+    await adminPb.collection('users').delete(user.id);
+    
+    // On vide le store local
+    pb.authStore.clear();
+    
+    return success(undefined, 'Votre compte a été supprimé définitivement.');
+  } catch (err: any) {
+    console.error('Erreur suppression compte:', err);
+    return error('Impossible de supprimer le compte. Contactez le club.', 'INTERNAL_ERROR');
   }
 }
