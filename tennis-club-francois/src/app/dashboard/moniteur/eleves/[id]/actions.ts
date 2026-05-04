@@ -1,9 +1,9 @@
 'use server';
 
-import { createClient } from '@/lib/pocketbase/server';
+import { createClient, createAdminClient } from '@/lib/pocketbase/server';
 
 export async function getStudentProfile(studentId: string) {
-  const pb = await createClient();
+  const pb = await createClient(); const adminPb = await createAdminClient();
   const user = pb.authStore.model;
 
   if (!user) throw new Error('Non authentifié');
@@ -11,19 +11,19 @@ export async function getStudentProfile(studentId: string) {
   // 1. Infos de base du profil
   let profile;
   try {
-    profile = await pb.collection('profiles').getFirstListItem(`user="${studentId}"`, {
+    profile = await adminPb.collection('profiles').getFirstListItem(`user="${studentId}"`, {
       expand: 'user'
     });
   } catch (error) {
     throw new Error('Élève introuvable');
   }
 
-  const memberProfile = await pb.collection('member_profiles').getFirstListItem(`user="${studentId}"`).catch(() => null);
+  const memberProfile = await adminPb.collection('member_profiles').getFirstListItem(`user="${studentId}"`).catch(() => null);
 
   // 2. Historique des cours avec CE moniteur (passés)
   let pastCourses;
   try {
-    pastCourses = await pb.collection('reservations').getList(1, 20, {
+    pastCourses = await adminPb.collection('reservations').getList(1, 20, {
       filter: `user="${studentId}" && moniteur="${user.id}" && date_heure_debut < "${new Date().toISOString()}"`,
       sort: '-date_heure_debut',
       expand: 'court'
@@ -35,7 +35,7 @@ export async function getStudentProfile(studentId: string) {
   // 3. Cours à venir avec CE moniteur
   let upcomingCourses;
   try {
-    upcomingCourses = await pb.collection('reservations').getList(1, 5, {
+    upcomingCourses = await adminPb.collection('reservations').getList(1, 5, {
       filter: `user="${studentId}" && moniteur="${user.id}" && date_heure_debut >= "${new Date().toISOString()}"`,
       sort: 'date_heure_debut',
       expand: 'court'
@@ -47,7 +47,7 @@ export async function getStudentProfile(studentId: string) {
   // 4. Notes du bloc-notes pour cet élève
   let notes: any[] = [];
   try {
-    notes = await pb.collection('student_notes').getFullList({
+    notes = await adminPb.collection('student_notes').getFullList({
       filter: `moniteur="${user.id}" && student="${studentId}"`,
       sort: '-created'
     });

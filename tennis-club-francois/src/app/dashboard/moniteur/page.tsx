@@ -52,7 +52,6 @@ export default async function MoniteurDashboardPage() {
         <section className="col-span-12 lg:col-span-4 flex flex-col gap-4">
           <h3 className="font-headline text-xl font-bold px-2 text-emerald-950">Actions Rapides</h3>
           {[
-            { label: 'Ajouter un cours', icon: 'add_task', color: 'bg-emerald-500/10 text-emerald-600', href: '/dashboard/moniteur/planning' },
             { label: 'Noter un élève', icon: 'edit_note', color: 'bg-blue-500/10 text-blue-600', href: '/dashboard/moniteur/notes' },
             { label: 'Statistiques & Gains', icon: 'trending_up', color: 'bg-emerald-950/10 text-emerald-950', href: '/dashboard/moniteur/stats' },
           ].map((action) => (

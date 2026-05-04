@@ -67,10 +67,6 @@ export default function MoniteurLayout({
           })}
         </nav>
         <div className="px-6 mt-auto space-y-4">
-          <button className="w-full py-4 bg-secondary text-white rounded-full font-bold shadow-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform active:scale-95">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>add_circle</span>
-            <span>Ajouter un cours</span>
-          </button>
           <button 
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-6 py-3 text-emerald-100/40 hover:text-white font-headline text-sm font-bold transition-colors text-left group"

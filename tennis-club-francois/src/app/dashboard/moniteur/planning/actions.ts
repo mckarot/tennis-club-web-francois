@@ -22,20 +22,42 @@ export async function getMoniteurPlanningData(mondayDateStr?: string) {
   const endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(endOfWeek.getDate() + 7);
 
-  // 2. Récupérer les réservations pour la semaine
+  // 2. Récupérer TOUTES les réservations pour la semaine (pour voir l'occupation globale)
   let weekReservations: any[] = [];
   try {
     weekReservations = await adminPb.collection('reservations').getFullList({
-      filter: `moniteur="${userId}" && date_heure_debut >= "${startOfWeek.toISOString()}" && date_heure_debut < "${endOfWeek.toISOString()}"`,
+      filter: `date_heure_debut >= "${startOfWeek.toISOString()}" && date_heure_debut < "${endOfWeek.toISOString()}"`,
       sort: 'date_heure_debut',
-      expand: 'court,user'
+      expand: 'court,user,moniteur'
     });
   } catch (error) {
     console.error('Planning Error:', error);
     weekReservations = [];
   }
 
-  // 3. Récupérer les stats "Aujourd'hui"
+  const formattedReservations = (weekReservations || []).map(res => {
+    const isMine = res.moniteur === userId;
+    const courtInfo = res.expand?.court;
+    const userInfo = res.expand?.user;
+    const moniteurInfo = res.expand?.moniteur;
+
+    return {
+      id: res.id,
+      start_time: res.date_heure_debut,
+      end_time: res.date_heure_fin,
+      type: res.type_reservation || 'libre',
+      course_type: res.course_type,
+      isMine,
+      notes: res.notes,
+      student_name_manual: res.student_name_manual,
+      // Match PlanningClient expectations
+      profiles: userInfo ? { prenom: userInfo.prenom, nom: userInfo.nom } : null,
+      courts: courtInfo ? { nom: courtInfo.nom } : null,
+      moniteurName: moniteurInfo ? `${moniteurInfo.prenom} ${moniteurInfo.nom}` : null,
+    };
+  });
+
+  // 3. Récupérer les stats "Aujourd'hui" (uniquement pour CE moniteur)
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
   const todayEnd = new Date(todayStart);
@@ -64,16 +86,16 @@ export async function getMoniteurPlanningData(mondayDateStr?: string) {
   let allCourts: any[] = [];
   try {
     allCourts = await adminPb.collection('courts').getFullList({
-      sort: 'id'
+      sort: 'nom'
     });
   } catch (error) {
     allCourts = [];
   }
 
   return {
-    mondayStr,                             // ← canonical YYYY-MM-DD string, no timezone issue
+    mondayStr,
     startOfWeek: startOfWeek.toISOString(),
-    reservations: weekReservations || [],
+    reservations: formattedReservations,
     stats: {
       todayHours: Math.round(todayHours),
       todayStudents: uniqueStudents.size,

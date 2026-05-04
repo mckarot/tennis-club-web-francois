@@ -45,10 +45,6 @@ export default async function MoniteurElevesPage() {
           </p>
         </div>
         <div className="flex gap-4">
-          <button className="bg-primary text-white px-8 py-3.5 rounded-full font-bold flex items-center gap-2 hover:shadow-2xl hover:scale-[1.02] transition-all active:scale-95 group shadow-lg">
-            <span className="material-symbols-outlined text-xl group-hover:rotate-90 transition-transform duration-300">person_add</span>
-            <span>Ajouter un élève</span>
-          </button>
         </div>
       </div>
 

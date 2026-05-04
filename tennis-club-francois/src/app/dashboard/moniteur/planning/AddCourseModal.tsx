@@ -14,7 +14,7 @@ interface Student {
 interface AddCourseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  courts: { id: number; nom: string }[];
+  courts: { id: string; nom: string }[];
   students: Student[];
   initialData?: {
     date?: string;
@@ -28,7 +28,7 @@ export default function AddCourseModal({ isOpen, onClose, courts, students, init
   const [courseType, setCourseType] = useState<'individuel' | 'collectif' | 'stage'>('individuel');
   
   // Form fields
-  const [courtId, setCourtId] = useState<number>(courts[0]?.id || 1);
+  const [courtId, setCourtId] = useState<string>(courts[0]?.id || '');
   const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [startTime, setStartTime] = useState<string>('09:00');
   const [duration, setDuration] = useState<number>(60);
@@ -130,7 +130,7 @@ export default function AddCourseModal({ isOpen, onClose, courts, students, init
               <label className="text-sm font-medium text-white/70">Court</label>
               <select
                 value={courtId}
-                onChange={(e) => setCourtId(Number(e.target.value))}
+                onChange={(e) => setCourtId(e.target.value)}
                 className="w-full bg-white/5 border border-emerald-500/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all appearance-none"
               >
                 {courts.map(court => (

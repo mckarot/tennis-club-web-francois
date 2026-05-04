@@ -107,13 +107,6 @@ export default async function StudentProfilePage({
           {/* Actions rapides */}
           <div className="flex flex-col gap-3 flex-shrink-0">
             <Link
-              href={`/dashboard/moniteur/planning`}
-              className="bg-emerald-950 text-white px-6 py-2.5 rounded-full font-bold flex items-center gap-2 hover:bg-emerald-900 transition-all shadow-md text-sm"
-            >
-              <span className="material-symbols-outlined text-base">add</span>
-              Ajouter un cours
-            </Link>
-            <Link
               href={`/dashboard/moniteur/notes?student=${student.id}`}
               className="bg-white border border-emerald-900/10 text-emerald-950 px-6 py-2.5 rounded-full font-bold flex items-center gap-2 hover:bg-emerald-50 transition-all shadow-sm text-sm"
             >
