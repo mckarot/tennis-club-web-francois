@@ -44,16 +44,8 @@ export async function getStudentProfile(studentId: string) {
     upcomingCourses = { items: [] };
   }
 
-  // 4. Notes du bloc-notes pour cet élève
+  // 4. Notes du bloc-notes (Désactivé car collection non existante)
   let notes: any[] = [];
-  try {
-    notes = await adminPb.collection('student_notes').getFullList({
-      filter: `moniteur="${user.id}" && student="${studentId}"`,
-      sort: '-created'
-    });
-  } catch (error) {
-    notes = [];
-  }
 
   // 5. Calcul des stats
   const pastCoursesItems = pastCourses.items || [];

@@ -87,20 +87,23 @@ export async function getAdminMemberProfile(memberId: string) {
   const user = pb.authStore.model;
   if (!user) throw new Error('Non authentifié');
 
+  // Utilisation du client ADMIN pour voir les données de tous les membres
+  const adminPb = await createAdminClient();
+
   try {
     // 1. Infos de base du profil membre
-    const profile = await pb.collection('profiles')
+    const profile = await adminPb.collection('profiles')
       .getFirstListItem(`user="${memberId}"`, {
         expand: 'user'
       });
 
-    const memberProfile = await pb.collection('member_profiles')
+    const memberProfile = await adminPb.collection('member_profiles')
       .getFirstListItem(`user="${memberId}"`)
       .catch(() => null);
 
     // 2. Historique complet des réservations (toutes)
-    const now = new Date().toISOString().replace('T', ' ');
-    const pastReservations = await pb.collection('reservations')
+    const now = new Date().toISOString();
+    const pastReservations = await adminPb.collection('reservations')
       .getFullList({
         filter: `user="${memberId}" && date_heure_debut < "${now}"`,
         sort: '-date_heure_debut',
@@ -108,25 +111,15 @@ export async function getAdminMemberProfile(memberId: string) {
       });
 
     // 3. Réservations à venir
-    const upcomingReservations = await pb.collection('reservations')
+    const upcomingReservations = await adminPb.collection('reservations')
       .getFullList({
         filter: `user="${memberId}" && date_heure_debut >= "${now}"`,
         sort: 'date_heure_debut',
         expand: 'court',
       });
 
-    // 4. Notes du moniteur sur cet élève (toutes)
+    // 4. Notes du moniteur (Désactivé car collection non existante)
     let notes: any[] = [];
-    try {
-      notes = await pb.collection('student_notes')
-        .getFullList({
-          filter: `student="${memberId}"`,
-          sort: '-created',
-          expand: 'moniteur',
-        });
-    } catch (e) {
-      console.warn("Collection student_notes non trouvée");
-    }
 
     // 5. Stats
     const totalHours = (pastReservations || []).reduce((acc, r) => {
@@ -137,11 +130,18 @@ export async function getAdminMemberProfile(memberId: string) {
     const coursCounts = (pastReservations || []).filter(r => r.type_reservation === 'entrainement').length;
     const libreCount = (pastReservations || []).filter(r => r.type_reservation === 'libre').length;
 
+    // Construction de l'URL de l'avatar
+    const pbUrl = process.env.NEXT_PUBLIC_PB_URL || process.env.PB_URL || '';
+    const avatarFileName = profile.avatar_url || profile.photo_url;
+    const avatarUrl = avatarFileName 
+      ? `${pbUrl}/api/files/${profile.collectionId}/${profile.id}/${avatarFileName}` 
+      : null;
+
     return {
       id: profile.user,
       nom: profile.nom,
       prenom: profile.prenom,
-      avatarUrl: profile.photo_url || profile.avatar_url,
+      avatarUrl: avatarUrl,
       email: (profile as any).expand?.user?.email || '',
       role: profile.role,
       enrolledSince: profile.created,
