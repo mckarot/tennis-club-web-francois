@@ -134,12 +134,19 @@ export default function PlanningClient({
 
                             {/* 3. Add Button if courts available */}
                             {freeCourtsCount > 0 && (
-                              <div 
-                                className={`w-full rounded-xl border border-emerald-900/5 flex items-center justify-center text-emerald-900/10 bg-emerald-50/10 ${myRes || otherRes.length > 0 ? 'py-2' : 'h-full flex-grow'}`}
+                              <button 
+                                onClick={() => {
+                                  setSelectedSlot({ 
+                                    date: day.date.toISOString().split('T')[0], 
+                                    startTime: String(hour).padStart(2, '0') + ':00' 
+                                  });
+                                  setIsModalOpen(true);
+                                }}
+                                className={`w-full rounded-xl border-2 border-dashed border-emerald-900/5 flex items-center justify-center text-emerald-900/20 hover:border-emerald-600/30 hover:bg-emerald-50/50 hover:text-emerald-600/50 transition-all duration-300 group ${myRes || otherRes.length > 0 ? 'py-2' : 'h-full flex-grow'}`}
                               >
-                                <span className={`material-symbols-outlined ${myRes || otherRes.length > 0 ? 'text-lg' : 'text-2xl'}`}>event_available</span>
+                                <span className={`material-symbols-outlined group-hover:rotate-90 transition-transform duration-500 ${myRes || otherRes.length > 0 ? 'text-lg' : 'text-2xl'}`}>add</span>
                                 {(myRes || otherRes.length > 0) && <span className="text-[9px] font-black uppercase ml-1">{freeCourtsCount} Libres</span>}
-                              </div>
+                              </button>
                             )}
                             
                             {freeCourtsCount === 0 && !myRes && (
@@ -212,6 +219,17 @@ export default function PlanningClient({
         </aside>
       </div>
 
+
+      {/* Floating Action Button */}
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="fixed bottom-12 right-12 w-16 h-16 bg-secondary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50 group border-4 border-white"
+      >
+        <span className="material-symbols-outlined text-3xl font-bold">add</span>
+        <span className="absolute right-20 bg-emerald-950 text-white px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 whitespace-nowrap pointer-events-none shadow-xl border border-emerald-800">
+          Nouveau Cours
+        </span>
+      </button>
 
       {/* Add Course Modal */}
       <AddCourseModal 

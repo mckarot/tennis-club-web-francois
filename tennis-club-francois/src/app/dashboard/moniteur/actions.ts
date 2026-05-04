@@ -33,7 +33,23 @@ export async function getMoniteurDashboardData() {
     console.error('Error fetching reservations:', error);
   }
 
-  // 3. Stats
+  // 3. Récupérer les profils pour tous les élèves uniques
+  const uniqueStudentIds = Array.from(new Set(allReservations.map(r => r.user).filter(Boolean))) as string[];
+  let studentProfiles: any[] = [];
+  try {
+    if (uniqueStudentIds.length > 0) {
+      const filter = uniqueStudentIds.map(id => `user="${id}"`).join(' || ');
+      studentProfiles = await pbAdmin.collection('profiles').getFullList({
+        filter: filter
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching student profiles:', error);
+  }
+
+  const profileMap = new Map(studentProfiles.map(p => [p.user, p]));
+
+  // 4. Stats
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const tomorrow = new Date(today);
@@ -45,8 +61,7 @@ export async function getMoniteurDashboardData() {
   }).sort((a, b) => new Date(a.date_heure_debut).getTime() - new Date(b.date_heure_debut).getTime());
 
   // Élèves Actifs (uniques dans toutes les réservations)
-  const uniqueStudentIds = new Set(allReservations.map(r => r.user).filter(Boolean));
-  const activeStudentsCount = uniqueStudentIds.size;
+  const activeStudentsCount = uniqueStudentIds.length;
 
   // Heures cette semaine
   const startOfWeek = new Date();
@@ -66,33 +81,37 @@ export async function getMoniteurDashboardData() {
   });
   const hoursThisWeek = Math.round(totalMinutes / 60);
 
-  // 4. Derniers élèves (4 uniques)
+  // 5. Derniers élèves (4 uniques)
   const recentStudentsMap = new Map();
   for (const r of allReservations) {
-    const student = r.expand?.user;
-    if (student && !recentStudentsMap.has(student.id)) {
-      recentStudentsMap.set(student.id, {
-        name: `${student.prenom || ''} ${student.nom || ''}`.trim() || 'Élève',
+    const studentId = r.user;
+    const profile = profileMap.get(studentId);
+    const authUser = r.expand?.user;
+
+    if (studentId && !recentStudentsMap.has(studentId)) {
+      const name = profile ? `${profile.prenom || ''} ${profile.nom || ''}`.trim() : (r.student_name_manual || 'Élève');
+      recentStudentsMap.set(studentId, {
+        name: name || 'Élève',
         lastSession: new Date(r.date_heure_debut).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }),
-        initials: `${student.prenom?.[0] || ''}${student.nom?.[0] || ''}`.toUpperCase(),
-        img: student.avatar_url ? `${process.env.NEXT_PUBLIC_PB_URL}/api/files/${student.collectionId}/${student.id}/${student.avatar_url}` : null,
+        initials: profile ? `${profile.prenom?.[0] || ''}${profile.nom?.[0] || ''}`.toUpperCase() : '??',
+        img: profile?.avatar_url ? `${process.env.NEXT_PUBLIC_PB_URL}/api/files/${profile.collectionId}/${profile.id}/${profile.avatar_url}` : null,
       });
       if (recentStudentsMap.size >= 4) break;
     }
   }
 
-  // 5. Récupérer l'état des courts
+  // 6. Récupérer l'état des courts
   let allCourts: any[] = [];
   try {
     allCourts = await pbAdmin.collection('courts').getFullList({
-      sort: 'id'
+      sort: 'nom'
     });
   } catch (error) {
     allCourts = [];
   }
 
   const mappedSessions = sessionsToday.map(s => {
-    const studentProfile = s.expand?.user;
+    const profile = profileMap.get(s.user);
     const start = new Date(s.date_heure_debut);
     const end = new Date(s.date_heure_fin);
     const durationMin = Math.round((end.getTime() - start.getTime()) / (1000 * 60));
@@ -101,9 +120,9 @@ export async function getMoniteurDashboardData() {
       id: s.id,
       time: start.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
       duration: `${durationMin} min`,
-      student: studentProfile ? `${studentProfile.prenom} ${studentProfile.nom}` : (s.student_name_manual || 'Élève'),
+      student: profile ? `${profile.prenom} ${profile.nom}` : (s.student_name_manual || 'Élève'),
       court: s.expand?.court?.nom || 'Court',
-      type: s.type === 'cours' ? 'Individuel' : 'Libre',
+      type: s.type_reservation === 'cours' ? 'Individuel' : 'Libre',
       status: s.statut || s.status,
     };
   });
