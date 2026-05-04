@@ -33,6 +33,14 @@ export type MemberDashboardData = {
     isOccupied: boolean;
     isInMaintenance: boolean;
   }[];
+  clubEvent: {
+    title: string;
+    description: string;
+    category: string;
+    image?: string;
+    participantsCount: number;
+    link?: string;
+  } | null;
 };
 
 /**
@@ -118,13 +126,37 @@ export async function getMemberDashboardData(): Promise<ActionResult<MemberDashb
       isOccupied: occupiedCourtIds.has(c.id),
       isInMaintenance: (c as any).statut === 'maintenance'
     }));
+    
+    // 5. Événement du Club
+    let clubEvent = null;
+    try {
+      const eventRecords = await adminPb.collection('club_events').getList(1, 1, {
+        filter: 'is_active = true',
+        sort: '-created'
+      });
+      
+      if (eventRecords.items.length > 0) {
+        const e = eventRecords.items[0];
+        clubEvent = {
+          title: e.title,
+          description: e.description,
+          category: e.category,
+          image: e.image ? `${process.env.NEXT_PUBLIC_PB_URL || process.env.PB_URL}/api/files/${e.collectionId}/${e.id}/${e.image}` : undefined,
+          participantsCount: e.participants_count || 0,
+          link: e.link || undefined
+        };
+      }
+    } catch (eventError) {
+      console.warn('[Member Dashboard] Erreur lors de la récupération de l\'événement:', eventError);
+    }
 
     return {
       success: true,
       data: {
         profile: profile as any,
         nextReservation: nextRes,
-        courtsStatus
+        courtsStatus,
+        clubEvent
       }
     };
 

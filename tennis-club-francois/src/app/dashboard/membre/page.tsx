@@ -65,14 +65,8 @@ export default function MembreDashboardPage() {
         </div>
         
         <div className="flex items-center gap-4 bg-[#f3f4f2] p-2 rounded-full border border-white/40 shadow-sm animate-fade-in">
-          {/* Role Toggle (Indication only) */}
-          <button className="bg-white text-[#01261f] px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-[#01261f]/10 border border-[#c1c8c4]/30 hover:scale-[1.02] transition-all">Membre</button>
-          <button 
-            onClick={() => router.push('/dashboard/admin/planning')}
-            className="text-[#414846] px-8 py-3 rounded-full text-xs font-bold hover:bg-[#e7e8e6] transition-colors uppercase tracking-widest"
-          >
-            Admin View
-          </button>
+          <div className="bg-white text-[#01261f] px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-[#01261f]/10 border border-[#c1c8c4]/30 transition-all cursor-default">Membre</div>
+          {/* Profile Avatar */}
           <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-[#c5eadf] shadow-md p-0.5">
             {data.profile.avatar_url ? (
               <img className="w-full h-full object-cover rounded-full" src={data.profile.avatar_url} alt="Profile" />
@@ -268,27 +262,52 @@ export default function MembreDashboardPage() {
 
         {/* Widget 5: Actualités (Span 4) */}
         <section className="col-span-12 lg:col-span-4 bg-[#01261f] rounded-[2.5rem] overflow-hidden shadow-2xl group hover:-translate-y-2 transition-all duration-700 relative min-h-[450px]">
-          <img className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-40" src="https://images.unsplash.com/photo-1622279457486-62dcc4a4bd13?q=80&w=2072&auto=format&fit=crop" alt="Event" />
+          {data.clubEvent?.image ? (
+            <img className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-40" src={data.clubEvent.image} alt="Event" />
+          ) : (
+            <img className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-40" src="https://images.unsplash.com/photo-1622279457486-62dcc4a4bd13?q=80&w=2072&auto=format&fit=crop" alt="Default Event" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-[#01261f] via-[#01261f]/40 to-transparent"></div>
           
           <div className="absolute bottom-0 left-0 p-10 text-white w-full">
-            <span className="bg-[#9b4426] px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 inline-block shadow-xl">Événement</span>
-            <h4 className="text-3xl font-headline font-black leading-none mb-6 tracking-tight italic">Tournoi de Noël 2024 : Les inscriptions sont ouvertes !</h4>
-            <p className="text-white/70 font-medium text-sm line-clamp-2 leading-relaxed italic mb-8">Rejoignez-nous pour la compétition annuelle la plus prestigieuse du club. Places limitées par catégorie.</p>
-            
-            <div className="flex justify-between items-center">
-              <div className="flex -space-x-4">
-                {[1,2,3].map(i => (
-                  <div key={i} className="w-12 h-12 rounded-full border-3 border-[#01261f] bg-[#f9faf8] overflow-hidden shadow-xl ring-2 ring-white/10">
-                    <img className="w-full h-full object-cover" src={`https://i.pravatar.cc/100?u=${i}`} alt="Member" />
+            {data.clubEvent ? (
+              <>
+                <span className="bg-[#9b4426] px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 inline-block shadow-xl">
+                  {data.clubEvent.category}
+                </span>
+                <h4 className="text-3xl font-headline font-black leading-none mb-6 tracking-tight italic">
+                  {data.clubEvent.title}
+                </h4>
+                <p className="text-white/70 font-medium text-sm line-clamp-2 leading-relaxed italic mb-8">
+                  {data.clubEvent.description}
+                </p>
+                
+                <div className="flex justify-between items-center">
+                  <div className="flex -space-x-4">
+                    {[1, 2, 3].map(i => (
+                      <div key={i} className="w-12 h-12 rounded-full border-3 border-[#01261f] bg-[#f9faf8] overflow-hidden shadow-xl ring-2 ring-white/10">
+                        <img className="w-full h-full object-cover" src={`https://i.pravatar.cc/100?u=${i + 10}`} alt="Member" />
+                      </div>
+                    ))}
+                    {data.clubEvent.participantsCount > 0 && (
+                      <div className="w-12 h-12 rounded-full border-3 border-[#01261f] bg-[#c5eadf] flex items-center justify-center text-[10px] font-black text-[#01261f] shadow-xl ring-2 ring-white/10">
+                        +{data.clubEvent.participantsCount}
+                      </div>
+                    )}
                   </div>
-                ))}
-                <div className="w-12 h-12 rounded-full border-3 border-[#01261f] bg-[#c5eadf] flex items-center justify-center text-[10px] font-black text-[#01261f] shadow-xl ring-2 ring-white/10">+12</div>
+                  <button 
+                    onClick={() => data.clubEvent?.link && window.open(data.clubEvent.link, '_blank')}
+                    className="w-16 h-16 bg-white text-[#01261f] rounded-full flex items-center justify-center hover:bg-[#9b4426] hover:text-white transition-all shadow-2xl active:scale-90 group/nav"
+                  >
+                    <span className="material-symbols-outlined text-3xl group-hover/nav:translate-x-1 transition-transform">chevron_right</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-10">
+                <p className="text-white/30 italic font-headline text-xl">Aucun événement prévu prochainement</p>
               </div>
-              <button className="w-16 h-16 bg-white text-[#01261f] rounded-full flex items-center justify-center hover:bg-[#9b4426] hover:text-white transition-all shadow-2xl active:scale-90 group/nav">
-                <span className="material-symbols-outlined text-3xl group-hover/nav:translate-x-1 transition-transform">chevron_right</span>
-              </button>
-            </div>
+            )}
           </div>
         </section>
         
